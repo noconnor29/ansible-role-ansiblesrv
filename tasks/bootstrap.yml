@@ -1,0 +1,33 @@
+---
+- name: Create Ansible file store
+  ansible.builtin.file:
+    path: /opt/ansible/files
+    state: directory
+    owner: ansible
+    group: ansible
+    mode: '0770'
+  become: true
+  become_method: sudo
+
+- name: Install pip
+  ansible.builtin.package:
+    name: python3-pip
+    state: present
+
+- name: Update pip
+  ansible.builtin.pip:
+    name: pip
+    extra_args: --upgrade --user
+
+- name: Install Ansible
+  ansible.builtin.pip:
+    name: ansible
+
+- name: Pull Ansible Respository
+  ansible.builtin.git:
+    repo: "{{ git_user }}/{{ item }}"
+    dest: "~/{{ item }}"
+    accept_newhostkey: true
+#    force: true
+  loop:
+    - ansible

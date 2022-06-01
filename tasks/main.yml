@@ -1,0 +1,10 @@
+---
+#- name: Include OS-specific variables.
+#  include_vars: "{{ ansible_os_family }}.yml"
+
+# Prepare Ansible server
+- include_tasks: bootstrap.yml
+  #  when: ansible_os_family == 'Debian
+
+  # Update git repos
+- include_tasks: git.yml

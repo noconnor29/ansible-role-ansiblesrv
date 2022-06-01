@@ -1,0 +1,14 @@
+---
+- name: Sync Other Respositories
+  ansible.builtin.git:
+    repo: "{{ git_user }}/{{ item }}"
+    dest: "/opt/ansible/files/{{ item }}"
+    accept_newhostkey: yes
+    force: yes
+  loop:
+    - .external-configs
+    - external-docker-compose
+    - internal-docker-compose
+    - .userconfigs
+    - RoosterRecorder
+    - yt-archive
