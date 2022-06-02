@@ -18,10 +18,12 @@
   ansible.builtin.pip:
     name: pip
     extra_args: --upgrade --user
+  become_user: ansible
+  become_method: su
 
 - name: Install Ansible
   ansible.builtin.pip:
-    name: ansible
+    name: ansible,ansible-core,ansible-lint
 
 - name: Pull Ansible Respository
   ansible.builtin.git:
