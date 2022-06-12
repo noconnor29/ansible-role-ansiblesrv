@@ -18,13 +18,22 @@
   ansible.builtin.pip:
     name: pip
     extra_args: --upgrade --user
-  become_user: ansible
-  become_method: su
+    #  become_user: ansible
+    #  become_method: su
 
 - name: Install Ansible
   ansible.builtin.pip:
-    name: ansible,ansible-core,ansible-lint
+    name:
+      - ansible
+      - ansible-core
+      - ansible-lint
+    extra_args: --upgrade --user
+    #  become_user: ansible
+    #  become_method: su
 
+# solve this later. either pull repo locally and distribute or
+# get/generate priv ssh key to host for pulling
+# good candidate for Vault-stored key
 - name: Pull Ansible Respository
   ansible.builtin.git:
     repo: "{{ git_user }}/{{ item }}"
