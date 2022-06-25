@@ -1,4 +1,8 @@
 ---
+- name: Set Variables
+  set_fact:
+    ansible_user_home: "/home/{{ ansible_user }}"
+
 - name: Create Ansible file store
   ansible.builtin.file:
     path: /opt/ansible/files
@@ -6,8 +10,6 @@
     owner: ansible
     group: ansible
     mode: '0770'
-  become: true
-  become_method: sudo
 
 - name: Install pip
   ansible.builtin.package:
@@ -18,8 +20,6 @@
   ansible.builtin.pip:
     name: pip
     extra_args: --upgrade --user
-    #  become_user: ansible
-    #  become_method: su
 
 - name: Install Ansible
   ansible.builtin.pip:
@@ -28,16 +28,22 @@
       - ansible-core
       - ansible-lint
     extra_args: --upgrade --user
-    #  become_user: ansible
-    #  become_method: su
 
-# solve this later. either pull repo locally and distribute or
-# get/generate priv ssh key to host for pulling
-# good candidate for Vault-stored key
+- name: Set Ansible deploy key
+  ansible.builtin.copy:
+    src: ansible-deploy.key
+    dest: "{{ ansible_user_home }}/.ssh/{{ ansible_hostname }}"
+    decrypt: true
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0600
+    force: false
+
 - name: Pull Ansible Respository
   ansible.builtin.git:
     repo: "{{ git_user }}/{{ item }}"
-    dest: "~/{{ item }}"
+    dest: "{{ ansible_user_home }}/{{ item }}"
+    key_file: "{{ ansible_user_home }}/.ssh/{{ ansible_hostname }}"
     accept_newhostkey: true
 #    force: true
   loop:

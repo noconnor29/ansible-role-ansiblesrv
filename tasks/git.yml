@@ -3,6 +3,7 @@
   ansible.builtin.git:
     repo: "{{ git_user }}/{{ item }}"
     dest: "/opt/ansible/files/{{ item }}"
+    key_file: "/home/ansible/.ssh/{{ ansible_hostname }}"
     accept_newhostkey: yes
     force: yes
   loop:
